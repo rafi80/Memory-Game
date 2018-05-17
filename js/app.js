@@ -20,6 +20,14 @@ let listOfAllCards = [
     'fa fa-paper-plane-o'
 ];
 
+// Global variables
+// create a global variable to count player's moves
+let numberOfMoves = 0;
+// stars variable to identify the HTML element that holds stars
+const starsElement = document.querySelector('.stars');
+// moves variable to identify the moves HTML element
+const movesElement = document.querySelector('.moves');
+
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -29,7 +37,34 @@ let listOfAllCards = [
  */
 
 let shuffledListOfCards = shuffle(listOfAllCards);
-createHTMLForCards(shuffledListOfCards);
+resetBoard();
+
+// reset functionality
+//set event linstener on restart button
+const restartButton = document.querySelector('.restart'); 
+restartButton.addEventListener('click', resetBoard);
+
+//function to reset the board
+function resetBoard() {
+    // Clear the board already exist >> createHTMLForCards(shuffledListOfCards), so no new  function need
+    shuffle(listOfAllCards);
+    createHTMLForCards(shuffledListOfCards);
+    resetMoves();
+    resetStars();
+}
+
+// Reset the number of moves
+function resetMoves() {
+    numberOfMoves = 0;
+    movesElement.textContent = numberOfMoves;
+}
+// Reset the number of stars
+function resetStars(){
+    let starsListHTMLItems = ` <li><i class="fa fa-star"></i></li>
+                               <li><i class="fa fa-star"></i></li>
+                               <li><i class="fa fa-star"></i></li> `;
+    starsElement.innerHTML = starsListHTMLItems;
+}
 
 // Function to find deck list element and populate it with cards using shuffled array of cards
 function createHTMLForCards(array){
@@ -58,7 +93,6 @@ function shuffle(array) {
     return array;
 }
 
-
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
@@ -70,11 +104,49 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
+ //add all card element to a variable
 const deckElement = document.querySelector('.deck'); 
 
+// dispalys card by adding "show" class to a card element
 function displayCardsSymbol(evt){
-     evt.target.classList.add("open");
-     evt.target.classList.add("show");
+    evt.target.classList.add("show");
 }
 
-deckElement.addEventListener('click', displayCardsSymbol);
+// marks card as open by addign "open" class to a card element
+function markCardAsOpen(evt) {
+    evt.target.classList.add("open");
+}
+
+//hides card by removing "show" class from a card element
+function hideCardsSymbol(evt) {
+    evt.target.classList.remove("show");
+}
+
+// updates moves list
+function updateMovesList(){
+    numberOfMoves += 1;
+    movesElement.innerHTML = numberOfMoves;
+}
+
+// updates star rating
+function updateStarRating(){
+    if (numberOfMoves > 20 && numberOfMoves < 30 ) {
+        starsElement.innerHTML =  ` <li><i class="fa fa-star"></i></li>
+                                    <li><i class="fa fa-star"></i></li>`;
+    } else if (numberOfMoves > 30) {
+        starsElement.innerHTML =  ` <li><i class="fa fa-star"></i></li>`;
+    }
+}
+
+function presentWinPopUp() {
+    
+}
+
+// main function that reacts to a click to a card
+function reactToPlayersMove(evt) {
+    displayCardsSymbol(evt);
+    updateMovesList();
+    updateStarRating();
+};
+
+deckElement.addEventListener('click', reactToPlayersMove);
