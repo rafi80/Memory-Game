@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Matching Game</title>
     <meta name="description" content="">
     <link rel="stylesheet prefetch" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Coda">
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
@@ -31,7 +32,21 @@
         		<i class="fa fa-repeat"></i>
             </div>
         </section>
-
+        <div id="wonModal" class="modal">
+            <div class="modal-content">
+                <p>You won! Congratulations!</p> 
+                <p>You've managed to do it in: 
+                    <span class="minutes-modal"></span> minutes and 
+                    <span class="seconds-modal"></span> seconds!
+                </p>
+                <p>You've got 
+                    <span class="number-of-stars"></span> star(s)!
+                </p>
+                <p>Do You want to play again?</p>
+                <button id="yes">Yes</button>
+                <button id="no">No</button>
+            </div>
+        </div>
         <ul class="deck">
             <li class="card">
                 <i class="fa fa-diamond"></i>

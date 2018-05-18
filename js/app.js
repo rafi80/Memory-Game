@@ -36,7 +36,7 @@ const secondsElement = document.querySelector('.seconds');
 // restartButton variable to identify restart button
 const restartButton = document.querySelector('.restart'); 
  //variable to kepp add all card elements 
- const deckElements = document.querySelector('.deck'); 
+const deckElements = document.querySelector('.deck'); 
 // timer
 let timer;
 // current used time in seconds
@@ -49,12 +49,31 @@ let matchedCards = [];
 let currentlyComparedCards = [];
 // flag to determine first move
 let firstMove = true;
+// variable to store currently opened - "current" card
+let currentCard;
+// variable to store win game modal
+const winModal = document.querySelector('.modal');
+// variable to store number of stars in  modal
+const starsModal = document.querySelector('.number-of-stars');
+// variable to store minutes in modal
+const minutesModal = document.querySelector('.minutes-modal');
+// variable to store seconds in modal
+const secondsModal = document.querySelector('.seconds-modal');
+// variable to store no button from modal window
+noModalButton = document.querySelector('#no');
+//variable to store yes button from modal window
+yesModalButton = document.querySelector('#yes');
+
 
 // Event listeners
 // set event linstener on restart button
 restartButton.addEventListener('click', resetBoard);
-// set evenet listener to the cards
+// set event listener to the cards
 deckElements.addEventListener('click', reactToPlayersMove);
+// set event listener to the "no" button on modal
+noModalButton.addEventListener('click', doNotPlayAgain);
+// set event listener to the "yes" button on modal
+yesModalButton.addEventListener('click', playAgain);
 
 //start the game 
 start();
@@ -74,7 +93,7 @@ function resetBoard() {
     shuffledListOfCards = shuffle(listOfAllCards);
     createHTMLForCards(shuffledListOfCards);
     // reset results
-    resetMoves();
+    resetMoves();                                                                                     
     resetStars();
     resetTimeInHTML()
     usedTime = 0;
@@ -82,6 +101,9 @@ function resetBoard() {
     stopTime();
     // reset first move flag
     firstMove = true;
+    //clear the list of compared and matched cards
+    clearComparedCardsList();
+    clearMatchedCardsList();
 }
 
 // Resets the number of moves
@@ -142,30 +164,43 @@ function shuffle(array) {
 function reactToPlayersMove(evt) {
     // display card
     displayCardsSymbol(evt);
+    // set opened card as current
+    currentCard = evt.target;
+    // update moves and stars
+    updateMovesList();
+    updateStarRating();
     // check if the move is the first one
     if (firstMove) {
         // start timing
         setTime();
-        // mark card as open
-        markCardAsOpen(evt)
         // mark that first move were done       
         firstMove = false;
     }
-     if (currentlyComparedCards.length > 0) {
+     // if there is already something to compare
+    if (currentlyComparedCards.length === 1) {
+        // push current card to the comparison list
+        currentlyComparedCards.push(currentCard);
         // if the cards match
-        if (doCardsMatch(currentlyComparedCards[0],evt)) {
+        if (doCardsMatch(currentlyComparedCards[0],currentlyComparedCards[1])) {
             // mark the cards as matched
-            markCardsAsMatched(currentlyComparedCards[0],evt);
+            markCardsAsMatched(currentlyComparedCards[0],currentlyComparedCards[1]);
             updateMovesList();
             updateStarRating();
+            //clear the list of compared cards
+            clearComparedCardsList();
+            //check if game is over
+            isGameOver();
         } else {
             // hide cards from the board
-            hideCardsSymbol(currentlyComparedCards[0],evt);
+            hideCardsSymbol(currentlyComparedCards[0],currentlyComparedCards[1]);
             // remove card from the compared cards list
-            removeFromComparedCards();
+            clearComparedCardsList();
             updateMovesList();
             updateStarRating();
         }
+    } else {
+        //push current card to the comparison list
+        currentlyComparedCards.push(currentCard);
     }
 };
 
@@ -173,40 +208,42 @@ function reactToPlayersMove(evt) {
 function displayCardsSymbol(newOpenCard){
     newOpenCard.target.classList.add("show");
     newOpenCard.target.classList.add("disabled");
-    
-}
-
-// marks card as open by addign "open" class to a card element and adding it to list of compare cards
-function markCardAsOpen(newOpenCard) {
-    newOpenCard.target.classList.add("open");
-    currentlyComparedCards.push(newOpenCard.target);
+    newOpenCard.target.classList.add("open");   
 }
 
 // function marks two cards as matched and persist this fact on the matchedCards list
 function markCardsAsMatched(alreadyOpenCard,newOpenCard) {
     alreadyOpenCard.classList.add("match");
-    newOpenCard.target.classList.add("match");
-    matchedCards.push(alreadyOpenCard,newOpenCard.target);
+    newOpenCard.classList.add("match");
+    matchedCards.push(alreadyOpenCard,newOpenCard);
 }
 
 //hides card and remove "open" mark 
 function hideCardsSymbol(alreadyOpenCard,newOpenCard) {
-    alreadyOpenCard.classList.remove("show");
-    newOpenCard.target.classList.remove("show");
-    alreadyOpenCard.classList.remove("open");
-    newOpenCard.target.classList.remove("open");
-    alreadyOpenCard.classList.remove("disabled");
-    newOpenCard.target.classList.remove("disabled");
+    //hide the cards after a second
+    setTimeout(function () {
+        alreadyOpenCard.classList.remove("show");
+        newOpenCard.classList.remove("show");
+        alreadyOpenCard.classList.remove("open");
+        newOpenCard.classList.remove("open");
+        alreadyOpenCard.classList.remove("disabled");
+        newOpenCard.classList.remove("disabled");
+    }, 1000);
 }
 
-// removes card from the list of comapred cards)
-function removeFromComparedCards(){
+// removes cards from the list of comapred cards
+function clearComparedCardsList(){
     currentlyComparedCards = [];
 }
 
+// removes cards from the list of matched cards 
+function clearMatchedCardsList(){
+    matchedCards = [];
+}
+
+// checks if compared cards are the same
 function doCardsMatch(alreadyOpenCard,newOpenCard) {
-    return (alreadyOpenCard.innerHTML == newOpenCard.target.innerHTML) ? true : false;
-    isGameOver();
+    return (alreadyOpenCard.innerHTML == newOpenCard.innerHTML) ? true : false;
 }
 
 function isGameOver() {
@@ -214,22 +251,28 @@ function isGameOver() {
         // stop counting time
         stopTime();
         // present results
-        presentWinPopUp();
+        presentWinModal();
     }
 }
 // End of gameplay functionality
 
 // Utilities functionality
 // prepare and present results message
-function presentWinPopUp() {
-    if (confirm(` You won! Congratulations! 
-                  You've managed to do it in: TODO time!
-                  You've got ${numberOfStars} stars!
-                  Do You like to play again?`)) {
-        resetBoard();
-    } else {
-        //do nothing
-    }    
+function presentWinModal() {
+    winModal.style.display = "block";
+    starsModal.innerHTML = numberOfStars;
+    minutesModal.textContent = Math.floor(usedTime / 60);
+    secondsModal.textContent = usedTime % 60;
+}
+
+// closes modal if user do not want to play again
+function doNotPlayAgain() {
+    winModal.style.display = "none";
+}
+// closes the modal and restarts the game 
+function playAgain() {
+    winModal.style.display = "none";
+    resetBoard();
 }
 
 // measure and display time
@@ -262,11 +305,11 @@ function updateMovesList(){
 
 // updates the star rating
 function updateStarRating(){
-    if (numberOfMoves > 20 && numberOfMoves < 30 ) {
+    if (numberOfMoves > 40 && numberOfMoves < 50 ) {
         starsElement.innerHTML =  ` <li><i class="fa fa-star"></i></li>
                                     <li><i class="fa fa-star"></i></li>`;
         numberOfStars = 2;
-    } else if (numberOfMoves > 30) {
+    } else if (numberOfMoves > 50) {
         starsElement.innerHTML =  ` <li><i class="fa fa-star"></i></li>`;
         numberOfStars = 1;
     }
