@@ -62,6 +62,10 @@ h1 {
 
 /* Responsive */
 @media screen and (max-width: 520px) {
+    .h1 {
+        font-size: 1em;
+    }
+    
     .deck { 
         width: 300px;
         min-height: 300px;
@@ -72,6 +76,10 @@ h1 {
     .deck .card {
         height: 60px;
         width:  60px;
+    }
+
+    .score-panel {
+        width: 305px;
     }
 }
 
@@ -87,6 +95,10 @@ h1 {
         height: 100px;
         width:  100px;
     }
+
+    .score-panel {
+        width: 345px;
+    }
 }
 
 @media screen and (min-width: 900px) {
@@ -94,7 +106,7 @@ h1 {
         width: 660px;
         min-height: 680px;
         padding: 32px;
-        margin: 0 0 em;
+        margin: 0 0 3em;
     }
     
     .deck .card {
@@ -109,6 +121,10 @@ h1 {
         justify-content: center;
         align-items: center;
         box-shadow: 5px 2px 20px 0 rgba(46, 61, 73, 0.5);
+    }
+
+    .score-panel {
+        width: 345px;
     }
 }
 
@@ -140,7 +156,6 @@ h1 {
 
 .score-panel {
     text-align: left;
-    width: 345px;
     margin-bottom: 10px;
 }
 
