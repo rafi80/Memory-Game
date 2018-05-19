@@ -2,24 +2,18 @@
 /*
  * A initial list that holds all cards
  */
-let listOfAllCards = [
-    'fa fa-anchor',
+let setOfCards = [
     'fa fa-anchor',
     'fa fa-bicycle',
-    'fa fa-bicycle',
-    'fa fa-bolt',
     'fa fa-bolt',
     'fa fa-bomb',
-    'fa fa-bomb',
-    'fa fa-cube',
     'fa fa-cube',
     'fa fa-diamond',
-    'fa fa-diamond',
     'fa fa-leaf',
-    'fa fa-leaf',
-    'fa fa-paper-plane-o',
     'fa fa-paper-plane-o'
 ];
+
+let listOfAllCards = setOfCards.concat(setOfCards);
 
 // variable to count player's moves
 let numberOfMoves = 0;
@@ -166,9 +160,6 @@ function reactToPlayersMove(evt) {
     displayCardsSymbol(evt);
     // set opened card as current
     currentCard = evt.target;
-    // update moves and stars
-    updateMovesList();
-    updateStarRating();
     // check if the move is the first one
     if (firstMove) {
         // start timing
@@ -305,11 +296,11 @@ function updateMovesList(){
 
 // updates the star rating
 function updateStarRating(){
-    if (numberOfMoves > 40 && numberOfMoves < 50 ) {
+    if (numberOfMoves > 20 && numberOfMoves < 25 ) {
         starsElement.innerHTML =  ` <li><i class="fa fa-star"></i></li>
                                     <li><i class="fa fa-star"></i></li>`;
         numberOfStars = 2;
-    } else if (numberOfMoves > 50) {
+    } else if (numberOfMoves > 25) {
         starsElement.innerHTML =  ` <li><i class="fa fa-star"></i></li>`;
         numberOfStars = 1;
     }
