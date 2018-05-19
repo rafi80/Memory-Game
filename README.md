@@ -3,10 +3,11 @@ A classic memory game implementation in HTML, CSS, JS.
 Created for purpose of Udacity Nanodegree program.
 
 ## Getting Started
-Download the project from this git-repository.
+Download the project from this git-repository. 
+You can use git or downlad the compressed zip file using the green button "Clone or download" on this page.
 
 ## Installing
-After downloading, start the game by double-clicking on index.html file.
+After downloading (and unpacking the files to any local folder if You used the zip download), start the game by double-clicking on index.html file.
 
 ## How to play?
 The goal is to reveal all the cards on the deck in as few moves as possible.
